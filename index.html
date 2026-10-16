@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Steelwright | IS 875 Loads, Truss and Beam Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#2b3e5a;--navy2:#22334c;--bg:#dde4ea;--ink:#1c2a3a;--mut:#5d6a79;--card:#f4f6f8;--line:#c5cdd6;--acc:#2b3e5a;--acc-ink:#fff;--tab:#d98b5f;--note:#ece8df;--noteline:#cdc5b5;--field:#fff;--bok:#2e7d55;--bbad:#b23a2e;--serif:"Source Serif 4",Georgia,"Times New Roman",serif;--sans:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,Consolas,monospace;box-sizing:border-box;padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--navy:#16233a;--navy2:#111c2f;--bg:#0f1722;--ink:#e3e9f0;--mut:#93a1b2;--card:#182231;--line:#2c3a4d;--acc:#4d6f9e;--acc-ink:#fff;--tab:#e0a17a;--note:#222a33;--noteline:#3b4350;--field:#0f1722}}
+:root[data-theme="dark"]{--navy:#16233a;--navy2:#111c2f;--bg:#0f1722;--ink:#e3e9f0;--mut:#93a1b2;--card:#182231;--line:#2c3a4d;--acc:#4d6f9e;--acc-ink:#fff;--tab:#e0a17a;--note:#222a33;--noteline:#3b4350;--field:#0f1722}
+*{box-sizing:border-box}
+html{scroll-padding-top:12px}
+body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.55 var(--sans);min-height:100vh}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+/* header */
+.top{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding-top:env(safe-area-inset-top,0px)}
+.brand{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;padding:22px 0 20px}
+.brand b{font:700 1.7rem/1.2 var(--serif);letter-spacing:.01em}
+.brand span{font-size:.85rem;color:#c3cfdf}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin-top:14px}
+.tabs button{padding:11px 14px 10px;border:0;border-bottom:2px solid transparent;background:transparent;color:#c3cfdf;font:600 .92rem var(--sans);cursor:pointer}
+.tabs button:hover{color:#fff}
+.tabs button[aria-selected="true"]{color:#fff;border-bottom-color:var(--tab)}
+.tabs button:focus-visible{outline:2px solid #fff;outline-offset:-3px;border-radius:3px}
+main.wrap{padding-top:22px;padding-bottom:48px}
+/* headings and notes */
+.pagehead{margin:4px 0 16px}
+.pagehead h2,.sec{font:700 1.45rem/1.25 var(--serif);margin:0 0 4px;color:var(--ink)}
+.pagehead p,.lead{color:var(--mut);margin:0;max-width:760px;font-size:.9rem}
+.disc{background:var(--note);border:1px solid var(--noteline);border-radius:6px;padding:12px 16px;font-size:.88rem;margin:0 0 26px}
+.sec{margin-top:0}.lead{margin-bottom:16px}
+/* dashboard module cards */
+.mods{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:900px){.mods{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.mods{grid-template-columns:1fr}}
+.mod{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 2px rgba(20,35,55,.06)}
+.mod h3{font:700 1.05rem/1.25 var(--serif);margin:0}
+.mod p{margin:0;color:var(--mut);font-size:.82rem;flex:1}
+.mod .go{align-self:flex-start;padding:8px 18px;border:0;border-radius:5px;background:var(--acc);color:var(--acc-ink);font:600 .85rem var(--sans);cursor:pointer}
+.mod .go:hover{filter:brightness(1.12)}.mod .go:focus-visible{outline:2px solid var(--tab);outline-offset:2px}
+.mod .soon{align-self:flex-start;font-size:.7rem;color:var(--mut);border:1px solid var(--line);border-radius:99px;padding:2px 9px}
+.mod.off{background:transparent;box-shadow:none}.mod.off h3,.mod.off p{opacity:.6}
+.back{display:inline-block;margin:0 0 8px;padding:5px 12px;border:1px solid var(--line);border-radius:5px;background:transparent;color:var(--mut);font:600 .8rem var(--sans);cursor:pointer}.back:hover{color:var(--ink);border-color:var(--mut)}.back:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+/* panels */
+.grid{display:grid;grid-template-columns:1fr 1.1fr;gap:16px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.panel,.bp{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin-bottom:16px;box-shadow:0 1px 2px rgba(20,35,55,.06)}
+.panel h2,.bp h3{font:700 1.08rem/1.3 var(--serif);margin:0 0 10px;color:var(--ink)}
+label{display:block;font-size:.82rem;color:var(--mut);margin:10px 0 3px;font-weight:500}
+input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:5px;background:var(--field);color:var(--ink);font:1rem var(--sans)}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+textarea{font-size:.9rem}
+.row,.br{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.c{border:1px solid var(--line);border-top:3px solid var(--navy);border-radius:8px;padding:10px 12px;background:var(--card)}
+:root[data-theme="dark"] .c{border-top-color:var(--acc)}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .c{border-top-color:var(--acc)}}
+.c b{display:block;font-size:.74rem;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.c span{font:700 1.55rem var(--serif)}.c small{display:block;color:var(--mut)}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+td{padding:6px 0;border-bottom:1px solid var(--line)}td:last-child{text-align:right;font-weight:600}
+.note,.bnote{color:var(--mut);font-size:.8rem;margin-top:12px}.ar{margin:8px 0 0;font-weight:600}
+#tn,#wz,#cn{font-size:.85rem}#tn td:not(:first-child),#wz td:not(:first-child),#cn td:not(:first-child){text-align:right;font-weight:400}#tn td:last-child{font-weight:600}
+.btn,.bbtn{width:100%;padding:10px;border:1.5px solid var(--acc);background:transparent;color:var(--acc);font:600 .88rem var(--sans);border-radius:5px;cursor:pointer}
+.btn:hover,.bbtn:hover{background:var(--acc);color:var(--acc-ink)}
+.bbtn{margin-top:10px}.bbtn:focus-visible,.btn:focus-visible{outline:2px solid var(--tab);outline-offset:2px}
+:root[data-theme="dark"] .btn,:root[data-theme="dark"] .bbtn{color:#a9c4e6}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn,:root:not([data-theme="light"]) .bbtn{color:#a9c4e6}}
+:root[data-theme="dark"] .btn:hover,:root[data-theme="dark"] .bbtn:hover{color:#fff}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn:hover,:root:not([data-theme="light"]) .bbtn:hover{color:#fff}}
+[hidden]{display:none!important}
+.fx{font-size:.85rem}.fx td{padding:4px 3px}.fx td:not(:first-child){width:19%;font-weight:400}.fx input{padding:5px 6px;font-size:.9rem;text-align:right}
+/* beam tab */
+.bg{display:grid;grid-template-columns:1fr 1.2fr;gap:16px}@media(max-width:760px){.bg{grid-template-columns:1fr}}
+.ba{margin:10px 0 0;padding:8px 10px;background:var(--note);border:1px solid var(--noteline);border-radius:5px;font-size:.84rem}
+#tab-beam details{margin-top:12px}#tab-beam summary{cursor:pointer;font-weight:600;font-size:.85rem;color:var(--ink)}
+.bn{border-radius:8px;padding:12px 14px;color:#fff;font:700 1.1rem var(--serif);margin-bottom:12px}.bn small{display:block;font:500 .8rem var(--sans);opacity:.92}
+.bn.ok{background:var(--bok)}.bn.bad{background:var(--bbad)}
+.ck{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:10px;background:var(--field)}
+.ck .t{display:flex;justify-content:space-between;align-items:center;font-weight:600}
+.ck .t em{font:700 .72rem var(--sans);font-style:normal;color:#fff;padding:2px 9px;border-radius:99px}
+.ck .v{font:500 .8rem var(--mono);color:var(--mut);margin-top:4px}
+.bbar{height:7px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:6px}.bbar span{display:block;height:100%;background:var(--navy)}.bbar .x{background:var(--bbad)}
+:root[data-theme="dark"] .bbar span{background:var(--acc)}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .bbar span{background:var(--acc)}}
+
+/* calculation tables */
+:root{--zebra:#ebeff3;--grp:#d6dee8;--grpink:#22334c;--keybg:#f6e6d9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--zebra:#1d2938;--grp:#233349;--grpink:#c9d8ee;--keybg:#3a2f2a}}
+:root[data-theme="dark"]{--zebra:#1d2938;--grp:#233349;--grpink:#c9d8ee;--keybg:#3a2f2a}
+.calc{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:.86rem;background:var(--card);margin-top:4px}
+.calc td{padding:7px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.calc tr:last-child td{border-bottom:0}
+.calc td:first-child{text-align:left;font-weight:500}
+.calc td:not(:first-child){font:500 .82rem/1.5 var(--mono);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.calc td:last-child{font-weight:600}
+.calc tr:nth-child(even) td{background:var(--zebra)}
+.calc .u{color:var(--mut);font-weight:400;font-size:.92em}
+.calc tr.th td{background:var(--navy);color:#fff;font:600 .72rem var(--sans);text-transform:uppercase;letter-spacing:.05em;border-bottom:0}
+.calc tr.th td:not(:first-child){text-align:right}
+.calc tr.grp1 td{background:var(--navy);color:#fff;font:700 .95rem var(--serif);text-align:left;padding:9px 12px;border-bottom:0}
+.calc tr.grp2 td{background:var(--grp);color:var(--grpink);font:700 .78rem var(--sans);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--line)}
+.calc tr.tnote td{background:transparent;color:var(--mut);font:400 .78rem/1.5 var(--sans);text-align:left;white-space:normal;border-left:3px solid var(--tab)}
+.calc tr.key td{background:var(--keybg);font-weight:700;color:var(--ink)}
+.calc tr.key td:first-child{box-shadow:inset 3px 0 0 var(--tab)}
+.calc.wide{min-width:640px}.calc.wide td{padding:7px 10px}
+.calc.wide td:first-child{position:sticky;left:0;z-index:1;background:var(--card);white-space:nowrap}
+.calc.wide tr:nth-child(even) td:first-child{background:var(--zebra)}
+.calc.wide tr.th td:first-child{background:var(--navy)}
+.calc td.good{color:var(--bok)}.calc td.bad{color:var(--bbad)}
+.pill{display:inline-block;font:700 .7rem var(--sans);color:#fff;padding:2px 9px;border-radius:99px;margin-left:6px;letter-spacing:.03em}
+.pill.ok{background:var(--bok)}.pill.no{background:var(--bbad)}
+.scroll{overflow-x:auto;border-radius:8px}
+.calc+.calc{margin-top:14px}
+</style></head><body>
+<header class="top"><div class="wrap">
+<div class="brand"><b>Steelwright</b><span>IS 875 loads, truss analysis and member design · IS 800:2007</span></div>
+<nav class="tabs" role="tablist" hidden><button type="button" role="tab" id="tb-dash" aria-selected="true" aria-controls="tab-dash">Dashboard</button><button type="button" role="tab" id="tb-loads" aria-selected="false" aria-controls="tab-loads">Loads &amp; truss</button><button type="button" role="tab" id="tb-beam" aria-selected="false" aria-controls="tab-beam">Beam check</button></nav>
+</div></header>
+<main class="wrap">
+<div id="tab-dash" role="tabpanel" aria-labelledby="tb-dash">
+<div class="disc">Educational and preliminary design tool. Final structural design must be verified by a qualified structural engineer and checked against the applicable standards, project conditions and latest code revisions.</div>
+<h2 class="sec">Design modules</h2>
+<p class="lead">Every number in this app comes from the formula-based code in this file. The calculation is deterministic and the steps are shown.</p>
+<div class="mods">
+<div class="mod"><h3>Loads &amp; truss</h3><p>IS 875 roof loads, truss analysis with member forces, and tension and compression member design with bolt count (IS 800:2007).</p><button type="button" class="go" data-go="tb-loads">Open</button></div>
+<div class="mod"><h3>Beam check</h3><p>Suggests the lightest ISLB / ISHB / ISMB / ISMC from the steel table that passes bending, shear and deflection, IS 800:2007.</p><button type="button" class="go" data-go="tb-beam">Open</button></div>
+<div class="mod off"><h3>Column design</h3><p>Combined axial load and bending.</p><span class="soon">Planned</span></div>
+<div class="mod off"><h3>Bolted &amp; welded connections</h3><p>Bolt and weld capacity, block shear, plate checks.</p><span class="soon">Planned</span></div>
+<div class="mod off"><h3>Section library</h3><p>Searchable ISMB/ISMC/ISA database with CSV import.</p><span class="soon">Planned</span></div>
+<div class="mod off"><h3>Report generator</h3><p>Printable calculation sheet of your results.</p><span class="soon">Planned</span></div>
+</div>
+</div>
+<div id="tab-loads" role="tabpanel" aria-labelledby="tb-loads" hidden>
+<div class="pagehead"><button type="button" class="back" data-go="tb-dash">&larr; Dashboard</button><h2>Industrial building loads</h2><p>Dead, live, wind and snow loads on the roof per IS 875 (Parts 1 to 4). All loads in N/m².</p></div>
+<div class="grid"><div>
+<section class="panel"><h2>Building</h2>
+<div class="row"><div><label for="Lg">Length (m)</label><input id="Lg" type="number" step="0.1" placeholder="m"></div>
+<div><label for="Bw">Width (m)</label><input id="Bw" type="number" step="0.1" placeholder="m"></div></div>
+<p class="ar" id="ar"></p>
+<label for="sd">Trusses span across</label><select id="sd"><option value="min">Shorter side of the building</option><option value="Bw">Width</option><option value="Lg">Length</option></select>
+<div class="row"><div><label for="h">Total height (m): ground to ridge (roof peak)</label><input id="h" type="number" step="0.5" placeholder="m"></div>
+<div><label for="sl">Roof angle θ (°)</label><input id="sl" type="number" step="0.1" value="10"></div></div>
+<label for="loc">Location (IS 875 Part 3, Appendix A)</label><select id="loc"></select>
+<div class="row"><div><label for="vb">Basic wind speed Vb (m/s)</label><input id="vb" type="number" placeholder="pick a city or type"></div>
+<div><label for="s0">Ground snow load s0 (N/m²), enter for your site</label><input id="s0" type="number" step="50" placeholder="0 = no snow"></div></div>
+<div class="row"><div><label for="tc">Terrain category</label><select id="tc"><option value="1">1 – open, flat</option><option value="2" selected>2 – scattered obstructions</option><option value="3">3 – towns, industrial</option><option value="4">4 – large city centres</option></select></div>
+<div><label for="op">Openings (Cpi)</label><select id="op"><option value="0.2">Small ±0.2</option><option value="0.5" selected>Medium ±0.5</option><option value="0.7">Large ±0.7</option></select></div></div>
+<div class="row"><div><label for="k1">Design life (k1)</label><select id="k1"><option value="0">General, 50 yr</option><option value="1">Temporary, 5 yr</option><option value="2">Low hazard, 25 yr</option><option value="3">Important, 100 yr</option></select></div>
+<div><label for="k3">Topography k3</label><input id="k3" type="number" step="0.01" value="1"></div></div>
+<div class="row"><div><label for="k4">Importance k4 (industrial 1.15)</label><input id="k4" type="number" step="0.01" value="1.15"></div>
+<div><label for="k2o">k2 (IS 875 Part 3, Table 2, editable)</label><input id="k2o" type="number" step="0.001"></div></div>
+<div class="row"><div><label for="kd">Kd</label><input id="kd" type="number" step="0.01" value="0.9"></div>
+<div><label for="ka">Ka</label><input id="ka" type="number" step="0.01" value="0.85"></div></div>
+<div class="row"><div><label for="kc">Kc</label><input id="kc" type="number" step="0.01" value="0.9"></div>
+<div><label for="mn">Minimum Pd = 0.7 Pz</label><select id="mn"><option value="0">Off</option><option value="1">On</option></select></div></div>
+</section>
+<section class="panel"><h2>Self weights (N/m² of roof plan)</h2>
+<div class="row"><div><label for="sh">Roof sheet type</label><select id="sh"><option value="56">GI 0.63 mm</option><option value="69">GI 0.80 mm</option><option value="84">GI 1.00 mm</option><option value="130">AC corrugated 6 mm</option></select></div>
+<div><label for="w1">Roof sheet weight (N/m²)</label><input id="w1" type="number" step="1"></div></div>
+<div class="row"><div><label for="w2">Purlin weight (N/m²)</label><input id="w2" type="number" step="1" value="50"></div>
+<div><label for="ps">Purlin spacing along slope (m)</label><input id="ps" type="number" step="0.01"></div></div>
+<div class="row"><div><label for="na">Node spacing in plan (m)</label><input id="na" type="number" step="0.1" placeholder="2.3 if blank"></div><div><label for="ts">Truss c/c spacing (m)</label><input id="ts" type="number" step="0.1" placeholder="4 if blank"></div></div>
+<div class="row"><div><label for="w3">Truss self weight (N/m²)</label><input id="w3" type="number" step="1"></div>
+<div><label for="w4">Bracing weight (N/m²)</label><input id="w4" type="number" step="1" value="50"></div></div>
+<p class="note">Roof angle, sheet weight, purlin spacing, self weight and k2 are filled automatically. Type your own value once and it stays until you clear the box (then the automatic value returns). Choosing a different sheet refills the sheet weight from IS 875 Part 1.</p>
+</section>
+<section class="panel" hidden><h2>Load combination factors (DL, LL, WL, SL)</h2>
+<table class="fx" id="fx"></table>
+<button type="button" class="btn" id="fxr" style="margin-top:10px">Reset to default factors</button>
+<p class="note">All four loads are separate: DL dead, LL live, WL wind, SL snow. Edit any factor and the roof, purlin and truss member tables all update. Wind is taken as computed, so suction is negative (upward) and a negative WL factor gives pressure. Defaults keep live and snow in separate cases; to make them act together, put a factor in both columns.</p></section></div>
+<div><div class="cards" id="cd"></div>
+<section class="panel"><h2>Dead load details (N/m²)</h2><table id="dt"></table></section>
+<section class="panel"><h2>Wind load, step by step (IS 875 Part 3)</h2><table id="wt"></table><table id="wz" style="margin-top:12px"></table><table id="wf" style="margin-top:12px"></table></section>
+<section class="panel" hidden><h2>Roof design combinations (N/m², + is downward)</h2><table id="ct"></table></section>
+<section class="panel"><h2>Load on one truss and at each node</h2><table id="nt"></table><table id="tn" style="margin-top:12px"></table></section>
+<section class="panel"><h2>Purlin and bracing loads</h2><table id="pt"></table></section></div></div>
+<section class="panel" id="trans"><h2>Truss analysis (automatic)</h2>
+<p class="note" style="margin-top:0;font-weight:600" id="tg"></p>
+<p class="note">The app builds the truss from the span, node spacing and roof angle, finds every member's force for a 1 kN load at each top node, and scales it by the node loads. Leave a load box blank to use the app's own value, or type a value to override it.</p>
+<div class="row"><div><label for="nd">Dead load per node (kN)</label><input id="nd" type="number" step="0.01"></div><div><label for="nl">Live load per node (kN)</label><input id="nl" type="number" step="0.01"></div></div>
+<div class="row"><div><label for="nw">Wind load per node (kN, − is suction)</label><input id="nw" type="number" step="0.01"></div><div><label for="ns">Snow load per node (kN)</label><input id="ns" type="number" step="0.01"></div></div>
+<label for="mu">Manual unit forces (optional): bottom chord, rafter, vertical, diagonal. Blank = automatic</label><textarea id="mu" rows="3"></textarea></section>
+<section class="panel"><h2>Selected members: forces for each combination (kN)</h2><div class="scroll"><table id="mf"></table></div></section>
+<section class="panel" id="memdes"><h2>Member design and check (IS 800:2007)</h2>
+<div class="row"><div><label for="st">Section</label><select id="st"><option value="1">Double angle, back to back</option><option value="0">Single angle</option></select></div><div><label for="gr">Steel grade</label><select id="gr"><option value="250,450" selected>Fe 450 (fy 250, fu 450)</option><option value="250,410">E250 (Fe 410)</option><option value="300,440">E300</option><option value="350,490">E350</option></select></div></div>
+<div class="row"><div><label for="bd">Bolt diameter</label><select id="bd"><option value="12">M12</option><option value="16" selected>M16</option><option value="20">M20</option><option value="24">M24</option></select></div><div><label for="bn">Holes in critical section</label><input id="bn" type="number" value="1"></div></div>
+<div class="row"><div><label for="bg">Bolt grade</label><select id="bg"><option value="400">4.6</option><option value="800">8.8</option></select></div><div></div></div>
+<div class="row"><div><label for="gp">Gusset thickness (mm)</label><input id="gp" type="number" value="10"></div><div><label for="kf">Effective length factor K</label><input id="kf" type="number" step="0.05" value="1"></div></div>
+<table id="dd" style="margin-top:12px"></table>
+<p class="note"><b>Summary</b></p>
+<div class="scroll"><table id="md"></table></div>
+<p class="note">Members are grouped as tie member (bottom chord), rafter (top chord), strut (web member in compression) and sling (web member in tension). Each group uses its maximum positive force (tension) and maximum negative force (compression); bolts are counted for the governing force.</p></section>
+<p class="note">City speeds are from Appendix A of IS 875 (Part 3):1987, typed from a scanned copy, so please verify them. The 2015 edition refers to the NBC 2016 map, where some values differ. Vb is for 10 m height, terrain category 2, 50-year return, and is editable. Roof Cpe is the most severe of the four zones in Table 5, and pd = 0.6 Vz² as in the 1987 code. Ground snow is zero unless you enter it. Preliminary design only.</p>
+</div>
+<div id="tab-beam" role="tabpanel" aria-labelledby="tb-beam" hidden>
+<div class="pagehead"><button type="button" class="back" data-go="tb-dash">&larr; Dashboard</button><h2>Quick beam check</h2><p>Enter span and factored load. Choose the support condition. The app suggests the lightest ISLB / ISHB / ISMB / ISMC section (IS 808 table) that passes bending, shear and deflection as per IS 800:2007.</p></div>
+<div class="bg"><div>
+<section class="bp"><h3>Inputs</h3>
+<label for="b-sup">Support condition</label><select id="b-sup"><option value="ss">Simply supported</option><option value="ov">Overhanging (one end)</option><option value="cant">Cantilever</option><option value="prop">Propped cantilever (fixed and pinned)</option><option value="fix">Fixed at both ends</option></select>
+<label for="b-L">Span between supports / length (m)</label><input id="b-L" type="number" step="0.1" placeholder="m">
+<div id="b-ovw" hidden><label for="b-ov">Overhang length beyond the support (m)</label><input id="b-ov" type="number" step="0.1" placeholder="m"></div>
+<label for="b-w">Factored UDL load (kN/m)</label><input id="b-w" type="number" step="0.5" placeholder="kN/m">
+<button type="button" class="bbtn" id="b-fill">Use purlin design load from the loads tab</button>
+<p class="bnote" id="b-fn">Fills span = truss spacing and load = governing downward combination per purlin, which already includes purlin weight.</p>
+<p class="ba" id="b-sec"></p>
+<details><summary>Assumptions (editable)</summary>
+<div class="br"><div><label for="b-fy">Steel grade</label><select id="b-fy"><option value="250">E250 (fy 250)</option><option value="300">E300</option><option value="350">E350</option></select></div>
+<div><label for="b-dl">Deflection limit</label><select id="b-dl"><option value="300">L/300</option><option value="240">L/240</option><option value="360">L/360</option><option value="180">L/180</option><option value="150">L/150</option></select></div></div>
+<div class="br"><div><label for="b-lat">Lateral support</label><select id="b-lat"><option value="0">Full</option><option value="1">Unrestrained</option></select></div>
+<div><label for="b-lu">Unrestrained length (m)</label><input id="b-lu" type="number" step="0.1" placeholder="= span"></div></div>
+<label for="b-gf">Load factor (service = factored ÷ this)</label><input id="b-gf" type="number" step="0.05" value="1.5">
+<label for="b-sw">Beam self weight</label><select id="b-sw"><option value="0">Add automatically (factored)</option><option value="1">Already in my load</option></select></details>
+<details><summary>Add sections from your steel table (ISWB, ISJB, others)</summary><label for="b-x">One per line: name, h, b, tf, tw (mm), mass (kg/m), area (mm²), Ixx, Iyy (cm⁴), Zxx (cm³)</label><textarea id="b-x" rows="4" placeholder="name,h,b,tf,tw,mass,A,Ixx,Iyy,Zxx"></textarea></details>
+</section></div>
+<div><section class="bp"><h3>Result</h3><div id="b-out"></div></section>
+<section class="bp"><h3>Calculation</h3><table id="b-tr"></table>
+<details open><summary>Sections tried</summary><table id="b-tt"></table></details>
+<p class="bnote">Sections are tried from lightest to heaviest ISLB / ISMB by mass (properties typed from IS 808 tables, please verify against your steel table). Uniform load over the whole length, preliminary check only. Channels (ISMC) assume the load acts through the shear centre or twisting is restrained. Sections not in the list (ISWB, ISJB…) can be added from the steel table box in Assumptions.</p></section></div></div>
+</div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const CS="Agra 47,Ahmadabad 39,Ajmer 47,Almora 47,Amritsar 47,Asansol 47,Aurangabad 39,Bahraich 47,Bangalore 33,Barauni 47,Bareilly 47,Bhatinda 47,Bhilai 39,Bhopal 39,Bhubaneshwar 50,Bhuj 50,Bikaner 47,Bokaro 47,Bombay 44,Calcutta 50,Calicut 39,Chandigarh 47,Coimbatore 39,Cuttack 50,Darbhanga 55,Darjeeling 47,Dehra Dun 47,Delhi 47,Durgapur 47,Gangtok 47,Gauhati 50,Gaya 39,Gorakhpur 47,Hyderabad 44,Imphal 47,Jabalpur 47,Jaipur 47,Jamshedpur 47,Jhansi 47,Jodhpur 47,Kanpur 47,Kohima 44,Kurnool 39,Lakshadweep 39,Lucknow 47,Ludhiana 47,Madras 50,Madurai 39,Mandi 39,Mangalore 39,Moradabad 47,Mysore 33,Nagpur 44,Nainital 47,Nasik 39,Nellore 50,Panjim 39,Patiala 47,Patna 47,Pondicherry 50,Port Blair 44,Pune 39,Raipur 39,Rajkot 39,Ranchi 39,Roorkee 39,Rourkela 39,Simla 39,Srinagar 39,Surat 44,Tiruchchirrappalli 47,Trivandrum 39,Udaipur 47,Vadodara 44,Varanasi 47,Vijaywada 50,Visakhapatnam 50";
+const SNOW={Simla:2000,Srinagar:1500};
+const CITY=CS.split(",").map(s=>{const i=s.lastIndexOf(" ");return [s.slice(0,i),+s.slice(i+1)]});
+$("loc").add(new Option("Custom location",-1));CITY.forEach((c,i)=>$("loc").add(new Option(c[0]+" ("+c[1]+" m/s)",i)));$("loc").value=-1;
+const HT=[10,15,20,30,50,100];
+const K2={1:[[1.05,1.03,.99],[1.09,1.07,1.03],[1.12,1.10,1.06],[1.15,1.13,1.09],[1.20,1.18,1.14],[1.26,1.24,1.20]],2:[[1,.98,.93],[1.05,1.02,.97],[1.07,1.05,1],[1.12,1.10,1.04],[1.17,1.15,1.10],[1.24,1.22,1.17]],3:[[.91,.88,.82],[.97,.94,.87],[1.01,.98,.91],[1.06,1.03,.96],[1.12,1.09,1.02],[1.20,1.17,1.10]],4:[[.8,.76,.67],[.8,.76,.67],[.8,.76,.67],[.97,.93,.83],[1.10,1.05,.95],[1.20,1.15,1.05]]};
+const K1=[[1,1,1,1,1,1],[.82,.76,.73,.71,.70,.67],[.94,.92,.91,.90,.90,.89],[1.05,1.06,1.07,1.07,1.08,1.08]],VZ=[33,39,44,47,50,55];
+function lin(xs,ys,x){if(x<=xs[0])return ys[0];for(let i=1;i<xs.length;i++)if(x<=xs[i])return ys[i-1]+(ys[i]-ys[i-1])*(x-xs[i-1])/(xs[i]-xs[i-1]);return ys[ys.length-1]}
+const A7=[0,5,10,20,30,45,60],A8=[0,5,10,20,30,40,50,60];
+const T5=[[A7,{EF:[-.8,-.9,-1.2,-.4,0,.3,.7],GH:[-.4,-.4,-.4,-.4,-.4,-.5,-.6],EG:[-.8,-.8,-.8,-.7,-.7,-.7,-.7],FH:[-.4,-.4,-.6,-.6,-.6,-.6,-.6]}],[A7,{EF:[-.8,-.9,-1.1,-.7,-.2,.2,.6],GH:[-.6,-.6,-.6,-.5,-.5,-.5,-.5],EG:[-1,-.9,-.8,-.8,-.8,-.8,-.8],FH:[-.6,-.6,-.6,-.6,-.8,-.8,-.8]}],[A8,{EF:[-.7,-.7,-.7,-.8,-1,-.2,.2,.5],GH:[-.6,-.6,-.6,-.6,-.5,-.5,-.5,-.5],EG:[-.9,-.8,-.8,-.8,-.8,-.8,-.8,-.8],FH:[-.7,-.8,-.8,-.8,-.7,-.7,-.7,-.7]}]];
+const f=(x,d=0)=>(+x).toFixed(d),N=id=>+$(id).value||0;
+const CB0=[[1.5,1.5,0,0],[1.5,0,0,1.5],[1.2,1.2,1.2,0],[1.2,1.2,-1.2,0],[1.2,0,1.2,1.2],[1.2,0,-1.2,1.2],[1.5,0,1.5,0],[1.5,0,-1.5,0],[.9,0,1.5,0],[.9,0,-1.5,0]],LN=["DL","LL","WL","SL"];
+function fxBuild(){$("fx").innerHTML="<tr><td></td>"+LN.map(x=>`<td><b>${x}</b></td>`).join("")+"</tr>"+CB0.map((c,i)=>`<tr><td>Case ${i+1}</td>`+c.map((v,j)=>`<td><input id="fx${i}_${j}" type="number" step="0.05" value="${v}" aria-label="Case ${i+1} ${LN[j]} factor"></td>`).join("")+"</tr>").join("")}
+function cbf(){return CB0.map((c,i)=>c.map((v,j)=>{const e=$("fx"+i+"_"+j);return e?(+e.value||0):v}))}
+const cbl=a=>a.map((x,i)=>x?(x<0?"− ":"+ ")+Math.abs(x)+" "+LN[i]:"").filter(Boolean).join(" ").replace(/^\+ /,"")||"none",cv=(a,D,L,W,S,P=-W)=>a[0]*D+a[1]*L+a[2]*(a[2]<0?-P:W)+a[3]*S;
+const DIRTY={},AUTO={},AUTOIDS=["sl","w1","w3","ps","k2o"];
+function SPN(){const v=$("sd").value;return v=="Bw"?N("Bw"):v=="Lg"?N("Lg"):Math.min(N("Lg"),N("Bw"))}
+function setAuto(id,v){if(DIRTY[id]||document.activeElement===$(id))return;$(id).value=v}
+function V(id){const e=$(id);return(e.value===""&&AUTO[id]!==undefined)?AUTO[id]:N(id)}
+function TH(){return Math.min(60,Math.max(1,V("sl")))}
+function autos(){const sh=N("sh"),sp=SPN();
+ AUTO.sl=+(Math.atan(2*(sh==130?.2:1/6))*180/Math.PI).toFixed(1);setAuto("sl",AUTO.sl);
+ AUTO.ps=+(geo().a/Math.cos(TH()*Math.PI/180)).toFixed(2);setAuto("ps",AUTO.ps);
+ AUTO.w1=Math.round(sh<100?sh*1.1:sh);setAuto("w1",AUTO.w1);
+ AUTO.w3=Math.round((sp/3+5)*9.81);setAuto("w3",AUTO.w3);
+ const H=N("h"),mx=Math.max(N("Lg"),N("Bw"),H),cls=mx<20?0:mx<=50?1:2;
+ AUTO.k2o=+lin(HT,K2[$("tc").value].map(r=>r[cls]),H).toFixed(3);setAuto("k2o",AUTO.k2o)}
+
+function getLoc(){const i=+$("loc").value;if(i>=0){$("vb").value=CITY[i][1];$("s0").value=SNOW[CITY[i][0]]||0}}
+function calc(){
+ autos();if(!(SPN()>0&&N("Lg")>0&&N("Bw")>0&&N("h")>0&&N("vb")>0)){$("ar").textContent="Enter length, width, total height and basic wind speed Vb (pick a location or type it) to calculate.";["cd","dt","wt","wz","wf","ct","nt","tn","pt","dd","md","mf"].forEach(i=>$(i).innerHTML="");return}
+ const Lg=N("Lg"),Bw=N("Bw"),H=N("h"),th=TH(),vb=N("vb"),s0=N("s0"),cpi=N("op"),A=Lg*Bw,w=SPN();
+ const rise=w/2*Math.tan(th*Math.PI/180),h=H-rise;
+ $("ar").textContent="Plan area = "+f(A)+" m² · truss rise "+f(rise,2)+" m, eave at "+f(h,1)+" m"+(h<=0?" · total height is too small for this roof, increase it":"")+(V("sl")<1||V("sl")>60?" · roof angle limited to 1°–60° (range of the code tables)":"");
+ const w1=V("w1"),w2=N("w2"),w3=V("w3"),w4=N("w4"),dl=w1+w2+w3+w4;
+ const ll=1000*(th<=10?.75:Math.max(.4,.75-.02*(th-10)));
+ const mu=th<=50?.8:th<80?.8*(80-th)/30:0,sn=mu*s0;
+ const mx=Math.max(Lg,Bw,H),cls=mx<20?0:mx<=50?1:2,k2=lin(HT,K2[$("tc").value].map(r=>r[cls]),H);
+ let zi=VZ.findIndex(v=>v>=vb);if(zi<0)zi=5;const k1=K1[N("k1")][zi],k3=N("k3");
+ const k2u=V("k2o"),k4=N("k4"),vz=vb*k1*k2u*k3*k4,pz=.6*vz*vz,pdr=N("kd")*N("ka")*N("kc")*pz,pmin=.7*pz,pd=$("mn").value=="1"?Math.max(pdr,pmin):pdr;
+ const hw=h/w,g=T5[hw<=.5?0:hw<=1.5?1:2],cp={};for(const z in g[1])cp[z]=lin(g[0],g[1][z],th);
+ const cmin=Math.min(...Object.values(cp)),rs=-pd*Math.min(...Object.values(cp).flatMap(c=>[c-cpi,c+cpi])),ww=pd*(.7+cpi),wp=Math.max(0,pd*Math.max(...Object.values(cp).flatMap(c=>[c-cpi,c+cpi])));
+ const card=(t,v,s)=>`<div class="c"><b>${t}</b><span>${f(v)}</span> N/m²<small>${f(v*A/1000)} kN total · ${s}</small></div>`;
+ $("cd").innerHTML=card("Dead",dl,"sheet + purlin + self weight + bracing")+card("Live",ll,"roof, no access")+card("Wind (suction)",rs,"net roof uplift")+card("Snow",sn,"μ = "+f(mu,2));
+ const T=(id,r,n)=>$(id).innerHTML=r.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join("")+(n?`<tr><td colspan="2" style="font-size:.8rem;color:var(--mut)">${n}</td></tr>`:"");
+ T("dt",[["Roof sheet ("+$("sh").options[$("sh").selectedIndex].text+")",f(w1)],["Purlin",f(w2)],["Self weight",f(w3)],["Bracing",f(w4)],["Total dead load",f(dl)]],"IS 875 Part 1 gives plain GI sheet weights (Table 1); 10% is added for corrugation (assumed). Purlin, self weight and bracing are assumed values that you can edit.");
+ {const c0=Math.cos(th*Math.PI/180),ts0=N("ts")||4,np0=geo().np,A0=w/c0*ts0,gn=Math.min(...["EF","GH","EG","FH"].map(z=>Math.min(cp[z]-cpi,cp[z]+cpi))),F0=gn*A0*pd/1000;
+ T("wt",[["Basic wind speed Vb (m/s)",f(vb)],["k1",f(k1,2)],["k2",f(k2u,3)],["k3",f(k3,2)],["k4",f(k4,2)],["Design wind speed Vz = Vb·k1·k2·k3·k4 (m/s)",f(vz,2)],["Pz = 0.6 Vz² (N/m²)",f(pz)],["Kd",f(N("kd"),2)],["Ka",f(N("ka"),2)],["Kc",f(N("kc"),2)],["Pd = Kd·Ka·Kc·Pz (N/m²)",f(pd)]],(pdr<pmin&&$("mn").value!="1"?"Check: Pd is below 0.7 Pz = "+f(pmin)+" N/m², a minimum I understand IS 875 Part 3:2015 sets. Turn the minimum on to apply it. ":"")+(Math.abs(k2u-k2)>.0005?"k2 from Table 2 would be "+f(k2,3)+".":""));
+ const zn={EF:"EF windward slope",GH:"GH leeward slope",EG:"EG",FH:"FH"};
+ $("wz").innerHTML="<tr><td><b>Zone</b></td><td><b>Cpe</b></td><td><b>Cpe − (+Cpi)</b></td><td><b>Cpe − (−Cpi)</b></td></tr>"+Object.keys(zn).map(z=>`<tr><td>${zn[z]}</td><td>${f(cp[z],3)}</td><td>${f(cp[z]-cpi,3)}</td><td>${f(cp[z]+cpi,3)}</td></tr>`).join("")+`<tr><td colspan="4" style="font-size:.8rem;color:var(--mut)">Cpi = ±${f(cpi,1)}. EF and GH are for wind across the width (0°), EG and FH for wind along the length (90°). Cpe is interpolated from Table 5 for the roof angle.</td></tr>`;
+ T("wf",[["Governing Cpe − Cpi",f(gn,3)],["Roof area on one truss A = span ÷ cosθ × truss spacing (m²)",f(A0,2)],["Wind load F = (Cpe − Cpi) × A × Pd (kN)",f(F0,2)],["Wind load per node = F ÷ "+f(np0)+" panels (kN)",f(F0/np0,2)]],"Negative means suction, acting upward on the roof.");}
+ const im=Math.max(ll,sn),CBF=cbf();
+ T("ct",CBF.map((a,i)=>["Case "+(i+1)+": "+cbl(a),f(cv(a,dl,ll,-rs,sn,wp))]),"Uses live, snow and wind separately with the factors set in the left column. Negative means net uplift.");
+ const s=V("ps")||1.5,d=(w1+w2)*s;
+ {const gg=geo(),a=gg.a,ts=N("ts")||4,c=Math.cos(th*Math.PI/180),np=gg.np,dp=(w1+w2)/c+w3+w4,planA=w*ts,surfA=w/c*ts;
+ const row=(n,i,A)=>{const t=i*A/1000;return `<tr><td>${n}</td><td>${f(i)}</td><td>${f(t,2)}</td><td>${f(t/np,2)}</td><td>${f(t/np/2,2)}</td></tr>`};
+ T("nt",[["Span of truss (m)",f(w,1)],["Truss spacing (m)",f(ts,1)],["Plan area on one truss = span × spacing (m²)",f(planA,1)],["Roof surface area on one truss (m²)",f(surfA,1)],["Number of panels = span ÷ node spacing",f(np)],["Number of nodes",f(np+1)],["Dead intensity on plan = (sheet + purlin) ÷ cosθ + self weight + bracing (N/m²)",f(dp)]]);
+ $("tn").innerHTML="<tr><td><b>Load</b></td><td><b>N/m²</b></td><td><b>Total kN</b></td><td><b>Each node kN</b></td><td><b>End node kN</b></td></tr>"+row("Dead",dp,planA)+row("Live",ll,planA)+row("Snow",sn,planA)+row("Wind (suction)",-rs,surfA)+row("Wind (pressure)",wp,surfA)+`<tr><td colspan="5" style="font-size:.8rem;color:var(--mut)">Total on truss = intensity × area. Each node = total ÷ panels. End (eave) nodes take half. Wind is suction (negative, upward) at right angles to the roof, over the roof surface area.</td></tr>`;
+ const Dn=dp*planA/1000/np,In=Math.max(ll,sn)*planA/1000/np,Wn=-rs*surfA/1000/np;
+ window.NL={D:Dn,L:ll*planA/1000/np,W:Wn,WP:wp*surfA/1000/np,S:sn*planA/1000/np};
+ members();}
+ const cth=Math.cos(th*Math.PI/180),pcv=CBF.map(a=>cv(a,d,ll*s*cth,-rs*s,sn*s*cth,wp*s));window.PU={ts:N("ts")||4,w:Math.max(...pcv)/1000};T("pt",[["Dead on purlin (N/m)",f(d)],["Live on purlin (N/m)",f(ll*s*cth)],["Snow on purlin (N/m)",f(sn*s*cth)],["Wind uplift on purlin (N/m)",f(rs*s)],["Wind pressure on purlin (N/m)",f(wp*s)],...CBF.map((a,i)=>["Case "+(i+1)+": "+cbl(a)+" (N/m)",f(pcv[i])]),["Wind on one end wall (kN)",f(ww*w*h/1000,1)]],"Per purlin at the chosen spacing; live and snow act on plan area, so they are multiplied by cos θ. The end-wall wind force is shared by the roof and wall bracing.");
+}
+function update(e){const id=e&&e.target&&e.target.id;
+ if(id=="loc")getLoc();
+ if(id=="sh")DIRTY.w1=false;
+ const au=AUTOIDS.includes(id);
+ if(au)DIRTY[id]=$(id).value!=="";
+ calc();
+ if(au&&e.type=="change"&&$(id).value===""){DIRTY[id]=false;$(id).value=AUTO[id];calc()}}
+const SZ=[[50,5],[50,6],[65,6],[65,8],[75,6],[75,8],[75,10],[90,6],[90,8],[90,10],[100,8],[100,10],[100,12],[110,10],[110,12],[130,10],[130,12],[150,12],[150,15],[200,15],[200,20]].sort((x,y)=>x[1]*(2*x[0]-x[1])-y[1]*(2*y[0]-y[1]));
+function geo(){const w=SPN(),a0=N("na")||2.3,np=Math.max(2,2*Math.round(w/a0/2));return{w,np,a:w/np}}
+function trussUnit(h,a,tn){
+ const nb=2*h+1,nt=2*h-1,nn=nb+nt,X=[],Y=[],M=[];
+ for(let i=0;i<nb;i++){X.push(i*a);Y.push(0)}
+ for(let j=1;j<=nt;j++){X.push(j*a);Y.push(Math.min(j,2*h-j)*a*tn)}
+ const ti=j=>nb+j-1;
+ for(let i=1;i<=2*h;i++)M.push(["Bottom chord",i-1,i]);
+ M.push(["Rafter",0,ti(1)]);for(let j=2;j<=nt;j++)M.push(["Rafter",ti(j-1),ti(j)]);M.push(["Rafter",ti(nt),2*h]);
+ for(let j=1;j<=nt;j++)M.push(["Vertical",ti(j),j]);
+ for(let j=1;j<h;j++)M.push(["Diagonal",ti(j),j+1]);
+ for(let j=1;j<h;j++)M.push(["Diagonal",ti(2*h-j),2*h-j-1]);
+ const nd=2*nn,K=Array.from({length:nd},()=>new Array(nd).fill(0)),F=new Array(nd).fill(0);
+ for(let j=1;j<=nt;j++)F[2*ti(j)+1]=-1;
+ M.forEach(([,p,q])=>{const dx=X[q]-X[p],dy=Y[q]-Y[p],L=Math.hypot(dx,dy),c=dx/L,s=dy/L,k=1/L,cc=[[c*c,c*s],[c*s,s*s]];
+  [[p,p,1],[p,q,-1],[q,p,-1],[q,q,1]].forEach(([r,t,sg])=>{for(let u=0;u<2;u++)for(let v=0;v<2;v++)K[2*r+u][2*t+v]+=sg*k*cc[u][v]})});
+ const fx=new Set([0,1,2*(2*h)+1]),fr=[];for(let i=0;i<nd;i++)if(!fx.has(i))fr.push(i);
+ const n=fr.length,A=fr.map(r=>fr.map(c=>K[r][c]).concat([F[r]]));
+ for(let i=0;i<n;i++){let pv=i;for(let r=i+1;r<n;r++)if(Math.abs(A[r][i])>Math.abs(A[pv][i]))pv=r;[A[i],A[pv]]=[A[pv],A[i]];
+  for(let r=i+1;r<n;r++){const q=A[r][i]/A[i][i];if(q)for(let c=i;c<=n;c++)A[r][c]-=q*A[i][c]}}
+ const x=new Array(n).fill(0);for(let i=n-1;i>=0;i--){let v=A[i][n];for(let c=i+1;c<n;c++)v-=A[i][c]*x[c];x[i]=v/A[i][i]}
+ const U=new Array(nd).fill(0);fr.forEach((d,i)=>U[d]=x[i]);
+ const force=([,p,q])=>{const dx=X[q]-X[p],dy=Y[q]-Y[p],L=Math.hypot(dx,dy);return((U[2*q]-U[2*p])*dx/L+(U[2*q+1]-U[2*p+1])*dy/L)/L};
+ const out=[],take=(st,cnt,ty)=>{for(let i=0;i<cnt;i++)out.push([ty,force(M[st+i])])};
+ take(0,h,"Bottom chord");take(2*h,h,"Rafter");take(4*h,h,"Vertical");take(4*h+nt,h-1,"Diagonal");return out}
+function props(b,t,dbl,g){const A=t*(2*b-t),xb=(b*b+b*t-t*t)/(2*(2*b-t)),Ix=(t*b**3+b*t**3-t**4)/3-A*xb*xb,Ixy=Math.abs(b*t*(b/2-xb)*(t/2-xb)+(b-t)*t*(t/2-xb)*((b+t)/2-xb)),rx=Math.sqrt(Ix/A),rv=Math.sqrt((Ix-Ixy)/A);
+ if(!dbl)return{A,rm:rv};return{A:2*A,rm:Math.min(rx,Math.sqrt((Ix+A*(xb+g/2)**2)/A))}}
+function members(){
+ const th=TH(),tn=Math.tan(th*Math.PI/180),c=Math.cos(th*Math.PI/180),a=geo().a,np=geo().np,NLv=window.NL||{D:0,L:0,W:0},D=$("nd").value===""?NLv.D:N("nd"),Lv=$("nl").value===""?NLv.L:N("nl"),W=$("nw").value===""?NLv.W:N("nw"),WPv=$("nw").value===""?(NLv.WP||0):Math.abs(N("nw")),Sv=$("ns").value===""?(NLv.S||0):N("ns"),CF=cbf(),[fy,fu]=$("gr").value.split(",").map(Number),dbl=$("st").value=="1",g=N("gp"),K=N("kf")||1,n=N("bn"),db=N("bd"),d0=db+2,fub=N("bg"),cnt={},rows=[];
+ const AU=trussUnit(np/2,a,tn),man=($("mu").value||"").split(/[\s,;]+/).filter(x=>x!=="").map(Number),manual=man.length==AU.length&&man.every(isFinite),MU=manual?AU.map((m,i)=>[m[0],man[i]]):AU;
+ MU.forEach(m=>{const u=m[1],d=u*D,l=u*Lv,w=u*W,sl=u*Sv,j=cnt[m[0]]=(cnt[m[0]]||0)+1,len=m[0]=="Bottom chord"?a:m[0]=="Rafter"?a/c:m[0]=="Vertical"?a*tn*j:Math.hypot(a,a*tn*j),cs=CF.map(a=>cv(a,d,l,w,sl,u*WPv));
+  rows.push({m,u,d,l,w,sl,len,cs,mx:Math.max(...cs),mn:Math.min(...cs)})});
+ const nat=r=>{const t=r.mx>.005,k=r.mn<-.005;return t&&k?"Tension / compression ("+(r.mx>=-r.mn?"T":"C")+" governs)":t?"Tension":k?"Compression":"Zero force"};
+ const catf=r=>r.m[0]=="Bottom chord"?"Tie member":r.m[0]=="Rafter"?"Rafter":(r.mx<.005&&r.mn>-.005)?"":(r.mx>=-r.mn?"Sling":"Strut");
+ const CATS=[["Tie member","bottom chord"],["Rafter","top chord"],["Strut","web member governed by compression"],["Sling","web member governed by tension"]];
+ const lab=e=>"ISA "+e.b+"×"+e.b+"×"+e.t+(dbl?" (2)":""),R2=(x,y)=>`<tr><td>${x}</td><td>${y}</td></tr>`;
+ let dd="",md="<tr>"+["Member","Governs","Section","L (m)","Tension kN","Compression kN","Td kN","Pd kN","Check","Bolts"].map(x=>`<td><b>${x}</b></td>`).join("")+"</tr>",sel=[];
+ CATS.forEach(([name,desc])=>{
+  const mem=rows.filter(r=>catf(r)==name);if(!mem.length)return;
+  const pm=mem.reduce((x,r)=>r.mx>x.mx?r:x),nm=mem.reduce((x,r)=>r.mn<x.mn?r:x),hp=pm.mx>.005,hn=nm.mn<-.005;
+  if(hp&&hn&&pm!==nm)sel.push([name+" – maximum positive",pm],[name+" – maximum negative",nm]);else sel.push([name,hp?pm:nm]);
+  const T=hp?pm.mx:0,C=hn?-nm.mn:0,Lt=(hp?pm:nm).len,Lc=(hn?nm:pm).len,limT=C>0?350:400,limC=hn&&(nm.cs[0]<-.005||nm.cs[1]<-.005)?180:250,ten=T>=C;
+  const ev=(b,t)=>{const p=props(b,t,dbl,g),k=dbl?2:1,Tdg=p.A*fy/1.1/1e3,Anc=t*((b-t/2)-n*d0),Ago=(b-t/2)*t,Tdn=k*(.9*Anc*fu/1.25+.7*Ago*fy/1.1)/1e3,Td=Math.min(Tdg,Tdn),lamT=Lt*1000/p.rm,lamC=K*Lc*1000/p.rm,fcc=Math.PI**2*2e5/lamC**2,lb=Math.sqrt(fy/fcc),ph=.5*(1+.49*(lb-.2)+lb*lb),chi=Math.min(1,1/(ph+Math.sqrt(ph*ph-lb*lb))),fcd=fy/1.1*chi,Pd=p.A*fcd/1e3,kb=Math.min(.5,2.5*db/(3*d0)-.25,fub/fu,1),tp=Math.min(dbl?2*t:t,g),As=Math.PI*db*db/4,Vdsb=fub/Math.sqrt(3)*k*.78*As/1.25/1e3,Vdpb=2.5*kb*db*tp*fu/1.25/1e3;
+   return{b,t,A:p.A,Tdg,Anc,Ago,Tdn,Td,lamT,lamC,fcc,lb,chi,fcd,Pd,kb,Vdsb,Vdpb,Vd:Math.min(Vdsb,Vdpb)}};
+  const okT=e=>T<=0||(e.Td>=T&&e.lamT<=limT),okC=e=>C<=0||(e.Pd>=C&&e.lamC<=limC);
+  let sg=null,sf=null;for(const [b,t] of SZ){const e=ev(b,t);if(!sg&&(ten?okT(e):okC(e)))sg=e;if(okT(e)&&okC(e)){sf=e;break}}
+  dd+=`<tr><td colspan="2" style="padding-top:12px"><b>${name} (${desc})</b></td></tr>`+R2("Maximum positive force, tension (kN)",f(T,1))+R2("Maximum negative force, compression (kN)",f(-C,1))+R2("Governs",ten?"Tension":"Compression");
+  if(!sf){dd+=R2("Section","No section in the list passes");md+=`<tr><td>${name}</td><td>${ten?"Tension":"Compression"}</td><td colspan="8">No section in the list passes</td></tr>`;return}
+  const F=ten?T:C,nb=Math.max(2,Math.ceil(F/sf.Vd));
+  dd+=R2("Section selected",lab(sf))+(T>0?R2("Safe tension load Td (kN)",f(sf.Td,1)):"")+(C>0?R2("Safe compression load Pd (kN)",f(sf.Pd,1)):"")+R2("Bolt diameter","M"+db)+R2("Bolt grade",fub==400?"4.6":"8.8")+R2("Shear capacity of one bolt (kN)",f(sf.Vdsb,1))+R2("Bearing capacity of one bolt (kN)",f(sf.Vdpb,1))+R2("Bolt value, smaller of the two (kN)",f(sf.Vd,1))+R2("Force for bolts, "+(ten?"maximum positive (kN)":"maximum negative (kN)"),f(F,1))+R2("Bolts required = force ÷ bolt value",f(F/sf.Vd,2))+R2("Number of bolts provided",nb);
+  md+=`<tr><td>${name}</td><td>${ten?"Tension":"Compression"}</td><td>${lab(sf)}</td><td>${f(ten?Lt:Lc,2)}</td><td>${f(T,1)}</td><td>${f(C,1)}</td><td>${f(sf.Td,1)}</td><td>${f(sf.Pd,1)}</td><td>OK</td><td>${nb}</td></tr>`});
+ const H=["Member","Unit","DL","LL","WL","SL",...CF.map((a,i)=>"C"+(i+1)+": "+cbl(a)),"Max + (tension)","Max − (compression)","Nature"];
+ $("mf").innerHTML="<tr>"+H.map(x=>`<td><b>${x}</b></td>`).join("")+"</tr>"+sel.map(([lb,r])=>"<tr><td>"+lb+"</td>"+[r.u,r.d,r.l,r.w,r.sl,...r.cs,r.mx,r.mn].map(x=>`<td>${f(x,2)}</td>`).join("")+`<td>${nat(r)}</td></tr>`).join("");
+ $("dd").innerHTML=dd;$("md").innerHTML=md;$("nd").placeholder=f(NLv.D,2);$("nl").placeholder=f(NLv.L,2);$("nw").placeholder=f(NLv.W,2);$("ns").placeholder=f(NLv.S||0,2);$("tg").textContent="Truss: "+np+" panels, node spacing "+f(a,2)+" m, rise "+f(np/2*a*tn,2)+" m, "+rows.length+" members in the half truss. Node loads used: dead "+f(D,2)+", live "+f(Lv,2)+", snow "+f(Sv,2)+", wind "+f(W,2)+" kN. Unit forces: "+(manual?"manual.":"automatic.");$("mu").placeholder=AU.map(x=>f(x[1],3)).join(" ");
+}
+document.addEventListener("input",update);document.addEventListener("change",update);
+fxBuild();$("fxr").onclick=()=>{fxBuild();calc()};getLoc();calc();
+(()=>{
+const q=i=>document.getElementById(i),n=i=>+q(i).value||0,f=(x,d=1)=>(+x).toFixed(d),E=2e5,G=76923,PI2=Math.PI**2;
+const S=[["ISLB 100",100,50,6.4,4,8,1021,168,12.7,33.6],["ISLB 125",125,75,6.5,4.4,11.9,1516,406.8,43.4,65.1],["ISLB 150",150,80,6.8,4.8,14.2,1808,688.2,55.2,91.8],["ISLB 175",175,90,6.9,5.1,16.7,2127,1096.2,79.6,125.3],["ISLB 200",200,100,7.3,5.4,19.8,2527,1696.6,115.4,169.7],["ISLB 250",250,125,8.2,6.1,27.9,3553,3717.8,193.4,297.4],["ISLB 300",300,150,9.4,6.7,37.7,4808,7332.9,376.2,488.9],["ISLB 350",350,165,11.4,7.4,49.5,6308,13158.3,538.1,751.9],["ISLB 400",400,165,12.5,8,56.9,7249,19306.3,716.4,965.3],["ISMC 75",75,40,7.3,4.4,6.8,867,76,12.6,20.3],["ISMC 100",100,50,7.5,4.7,9.2,1170,186.7,25.9,37.3],["ISMC 125",125,65,8.1,5,12.7,1619,416.4,59.9,66.6],["ISMC 150",150,75,9,5.4,16.4,2088,779.4,102.3,103.9],["ISMC 175",175,75,10.2,5.7,19.1,2438,1223.3,121,139.8],["ISMC 200",200,75,11.4,6.1,22.1,2821,1819.3,140.4,181.9],["ISMC 225",225,80,12.4,6.4,25.9,3367,2694.7,187.2,239.5],["ISMC 250",250,80,14.1,7.1,30.4,3867,3816.8,219.1,305.3],["ISMC 300",300,90,13.6,7.6,35.8,4564,6362.6,310.8,424.2],["ISMC 350",350,100,13.5,8.1,42.1,5366,10008,430.6,571.9],["ISMC 400",400,100,15.3,8.6,49.4,6293,15082.8,508.8,754.1],["ISHB 150",150,150,9,5.4,27.1,3455,1456,432.7,194.1],["ISHB 200",200,200,9,6.1,37.3,4755,3608.3,967.4,360.8],["ISHB 225",225,225,9.1,6.5,43.1,5496,5279.7,1348,469.3],["ISHB 250",250,250,9.7,6.9,51,6496,8122.9,2201.9,649.8],["ISHB 300",300,250,10.6,7.6,58.8,7485,12545.2,2193.6,836.3],["ISHB 350",350,250,11.6,8.3,67.4,8591,19158.5,2451.4,1094.8],["ISHB 400",400,250,12.7,9.1,77.4,9866,28083.5,2728.3,1404.2],["ISHB 450",450,250,13.7,9.8,87.2,11114,39210.8,3045,1742.7],["ISMB 150",150,80,7.6,4.8,14.9,1900,726.4,52.6,96.9],["ISMB 200",200,100,10.8,5.7,25.4,3230,2235.4,150,223.5],["ISMB 250",250,125,12.5,6.9,37.3,4755,5131.6,334.5,410.5],["ISMB 300",300,140,13.1,7.7,44.2,5626,8603.6,453.9,573.6],["ISMB 350",350,140,14.2,8.1,52.4,6671,13630.3,537.7,778.9],["ISMB 400",400,140,16,8.9,61.6,7846,20458.4,622.1,1022.9],["ISMB 450",450,150,17.4,9.4,72.4,9227,30390.8,834,1350.7],["ISMB 500",500,180,17.2,10.2,86.9,11074,38579,1369.8,1544],["ISMB 550",550,190,19.3,11.2,103.7,13211,64893.6,1833.8,2359.8],["ISMB 600",600,210,20.8,12,122.6,15621,91813,2651,3060]];
+S.sort((x,y)=>x[5]-y[5]);function xs(){return(q("b-x").value||"").split(/\n/).map(l=>l.split(",").map(x=>x.trim())).filter(a=>a.length>=10&&a.slice(1,10).every(x=>x!==""&&isFinite(+x)&&+x>0)).map(a=>[a[0],...a.slice(1,10).map(Number)])}
+const R=(a,b)=>`<tr><td>${a}</td><td>${b}</td></tr>`,GRP=t=>`<tr><td colspan="2"><b>${t}</b></td></tr>`;
+function chk(t,u,v){return `<div class="ck"><div class="t">${t}<em style="background:var(--${u<=1?'bok':'bbad'})">${u<=1?'OK':'NOT OK'}</em></div><div class="v">${v}</div><div class="bbar"><span class="${u>1?'x':''}" style="width:${Math.min(100,u*100)}%"></span></div></div>`}
+function run(){
+ const L=n("b-L"),w0=n("b-w"),fy=n("b-fy"),gf=n("b-gf")||1.5,dlim=n("b-dl"),lat=q("b-lat").value=="1",sw=q("b-sw").value=="0",sv="auto",Lu=(n("b-lu")||L)*1e3,sup=q("b-sup").value,ov=sup=="ov"?n("b-ov"):0;q("b-ovw").hidden=sup!="ov";
+ if(L<=0||w0<=0||(sup=="ov"&&ov<=0)){q("b-out").innerHTML="Enter span and load"+(sup=="ov"?" and overhang length":"")+".";q("b-tr").innerHTML="";q("b-tt").innerHTML="";q("b-sec").textContent="";return}
+ const FM={ss:["wL²/8","wL/2","5wL⁴/(384EI)"],cant:["wL²/2","wL","wL⁴/(8EI)"],fix:["wL²/12","wL/2","wL⁴/(384EI)"],prop:["wL²/8 (fixed end)","5wL/8","wL⁴/(185EI)"],ov:["max of sagging and hogging moment","max reaction or shear","larger of mid-span and tip deflection"]}[sup],SN={ss:"simply supported",cant:"cantilever",fix:"fixed at both ends",prop:"propped cantilever",ov:"overhanging beam"}[sup];
+ const act=(w,ws,I)=>{const Lm=L*1e3,A=ov,k=E*I;
+  if(sup=="cant")return{M:w*L*L/2,V:w*L,d:ws*Lm**4/(8*k),lim:Lm/dlim};
+  if(sup=="fix")return{M:w*L*L/12,V:w*L/2,d:ws*Lm**4/(384*k),lim:Lm/dlim};
+  if(sup=="prop")return{M:w*L*L/8,V:5*w*L/8,d:ws*Lm**4/(185*k),lim:Lm/dlim};
+  if(sup=="ov"&&A>0){const RA=w*(L*L-A*A)/(2*L),Mp=RA>0?RA*RA/(2*w):0,Am=A*1e3,dm=Math.abs(ws*Lm**4/(384*k)*(5-24*(A/L)**2)),dt=Math.abs(ws*Am/(24*k)*(4*Am*Am*Lm+3*Am**3-Lm**3)),tip=dt/(2*Am/dlim)>dm/(Lm/dlim);
+   return{M:Math.max(Mp,w*A*A/2),V:Math.max(RA,w*L-RA,w*A),d:tip?dt:dm,lim:tip?2*Am/dlim:Lm/dlim}}
+  return{M:w*L*L/8,V:w*L/2,d:5*ws*Lm**4/(384*k),lim:Lm/dlim}};
+ const ev=s=>{const [nm,h,b,tf,tw,m,Ag,Ix,Iy,Z]=s,ch=/^ISMC/i.test(nm),w=w0+(sw?gf*m*9.81/1000:0),I=Ix*1e4,Ze=Z*1e3,Zp=b*tf*(h-tf)+tw*(h-2*tf)**2/4,e=Math.sqrt(250/fy),fl=(ch?b-tw:b/2)/tf,wb=(h-2*(tf+Math.max(8,h/30)))/tw;
+  const cls=fl<=9.4*e&&wb<=84*e?1:fl<=10.5*e&&wb<=105*e?2:fl<=15.7*e&&wb<=126*e?3:4,cn=["","Plastic","Compact","Semi-compact","Slender"][cls],bb=cls<=2?1:Ze/Zp;
+  let fbd=fy/1.1,lam=0,chi=1,Mcr=0;
+  if(lat){const Iw=ch?tf*b**3*(h-tf)**2/12*(3*b*tf+2*(h-tf)*tw)/(6*b*tf+(h-tf)*tw):Iy*1e4*(h-tf)**2/4,It=(2*b*tf**3+(h-2*tf)*tw**3)/3;Mcr=Math.sqrt(PI2*E*Iy*1e4/Lu**2*(G*It+PI2*E*Iw/Lu**2));lam=Math.sqrt(bb*Zp*fy/Mcr);const ph=.5*(1+.21*(lam-.2)+lam*lam);chi=Math.min(1,1/(ph+Math.sqrt(ph*ph-lam*lam)));fbd=chi*fy/1.1}
+  const ac=act(w,w/gf,I),Mu=ac.M,Vu=ac.V,Md=Math.min(bb*Zp*fbd,1.2*Ze*fy/1.1)/1e6,Vd=h*tw*fy/Math.sqrt(3)/1.1/1e3,ws=w/gf,d=ac.d,lim=ac.lim,uM=Mu/Md,uV=Vu/Vd,uD=d/lim;
+  return{nm,m,Ag,w,cls,cn,fl,wb,Zp,Ze,bb,Mcr,lam,chi,Mu,Vu,Md,Vd,ws,d,lim,uM,uV,uD,ok:cls<4&&uM<=1&&uV<=1&&uD<=1,u:Math.max(uM,uV,uD),g:uM>=uV&&uM>=uD?"bending":uV>=uD?"shear":"deflection"}};
+ const all=S.concat(xs()).sort((x,y)=>x[5]-y[5]).map(ev),auto=sv=="auto",hit=all.findIndex(x=>x.ok),i=auto?(hit<0?all.length-1:hit):+sv,r=all[i];
+ q("b-sec").textContent="Suggested section: "+r.nm+" (A = "+r.Ag+" mm², "+r.m+" kg/m)";
+ q("b-out").innerHTML=`<div class="bn ${r.ok?'ok':'bad'}">${r.nm}: ${r.ok?(auto?'SUGGESTED BEAM (LIGHTEST THAT PASSES)':'ALL CHECKS PASS'):(auto?'NO ISLB / ISMB SECTION PASSES':'DOES NOT PASS')}<small>${r.cn} section${r.cls==4?' — local buckling, section not valid':''}${auto&&!r.ok?' — largest section shown, reduce span or load':''}</small></div>`+
+  chk("Check for bending",r.uM,`Mu ${f(r.Mu)} kNm ≤ Md ${f(r.Md)} kNm · ratio ${f(r.uM,2)}`)+chk("Check for shear",r.uV,`Vu ${f(r.Vu)} kN ≤ Vd ${f(r.Vd)} kN · ratio ${f(r.uV,2)}`)+chk("Check for deflection",r.uD,`δ ${f(r.d,1)} mm ≤ ${f(r.lim,1)} mm (span/${dlim}) · ratio ${f(r.uD,2)}`);
+ q("b-tr").innerHTML=GRP("Section")+R("Section · area (mm²) · mass (kg/m)",r.nm+" · "+r.Ag+" · "+r.m)+R("Factored load used (kN/m)",f(r.w,2)+(sw?" (incl. self weight "+f(gf*r.m*9.81/1000,2)+")":""))+GRP("Design actions, "+SN)+R("Mu = "+FM[0]+" (kNm)",f(r.Mu))+R("Vu = "+FM[1]+" (kN)",f(r.Vu))+GRP("Classification and properties (IS 800 Table 2)")+R("Class (b/tf · d/tw)",r.cn+" ("+f(r.fl,1)+" · "+f(r.wb,1)+")")+R("Zp (cm³) · Ze (cm³)",f(r.Zp/1e3,0)+" · "+f(r.Ze/1e3,0))+GRP("Capacities (IS 800 Cl. 8.2 bending, Cl. 8.4 shear)")+R("βb",f(r.bb,2))+(lat?R("Mcr (kNm) · λLT · χLT",f(r.Mcr/1e6,1)+" · "+f(r.lam,2)+" · "+f(r.chi,3)):R("Lateral support","full, fbd = fy/γm0"))+R("Md = βb·Zp·fbd ≤ 1.2·Ze·fy/γm0 (kNm)",f(r.Md))+R("Vd = h·tw·fy/(√3·γm0) (kN)",f(r.Vd))+(r.Vu>.6*r.Vd?R("Note","Vu > 0.6Vd, check moment reduction (Cl 9.2)"):"")+GRP("Deflection at service load (IS 800 Table 6)")+R("Service load w/"+gf+" (kN/m)",f(r.ws,2))+R("δ = "+FM[2]+" (mm)",f(r.d,1));
+ q("b-tt").innerHTML=(auto?all.slice(0,i+1):all).map(x=>R(x.nm,f(x.u,2)+" · "+x.g+(x.cls==4?" · slender":"")+(x.ok?" ✓":" ✗"))).join("")}
+const root=q("tab-beam");root.addEventListener("input",run);root.addEventListener("change",run);
+q("b-fill").onclick=()=>{const p=window.PU;if(!p)return;q("b-sup").value="ss";q("b-L").value=f(p.ts,2);q("b-sw").value="1";q("b-w").value=f(p.w,2);q("b-fn").textContent="Filled: span "+f(p.ts,2)+" m (truss spacing), load "+f(p.w,2)+" kN/m. Gravity load only, no sag rods or biaxial bending.";run()};
+const tabs=[["tb-dash","tab-dash"],["tb-loads","tab-loads"],["tb-beam","tab-beam"]];
+tabs.forEach(([b,p])=>q(b).onclick=()=>{tabs.forEach(([b2,p2])=>{q(b2).setAttribute("aria-selected",b2==b);q(p2).hidden=p2!=p});window.scrollTo(0,0)});
+document.querySelectorAll("[data-go]").forEach(g=>g.onclick=()=>{q(g.dataset.go).click();const t=g.dataset.scroll&&q(g.dataset.scroll);if(t)t.scrollIntoView()});
+run();
+})();
+</script>
+<script>
+(()=>{
+const IDS=["dt","wt","wz","wf","ct","nt","tn","pt","dd","md","mf","b-tr","b-tt"],WIDE=["md","mf"];
+const KEY=/^(Total dead load|Design wind speed|Pd =|Wind load per node|Section selected|Safe |Number of bolts|Md =|Vd =|δ =)/;
+function deco(t){
+ t.querySelectorAll("tr").forEach(tr=>{
+  const c=[...tr.cells];if(!c.length)return;
+  const tx=c[0].textContent.trim();let cls="";
+  const bold=x=>x.firstElementChild&&x.firstElementChild.tagName==="B"&&x.children.length===1&&x.textContent.trim()===x.firstElementChild.textContent.trim();
+  if(c.length===1&&c[0].colSpan>1){cls=bold(c[0])?"grp1":"tnote"}
+  else if(c.length>1&&bold(c[0])&&c.slice(1).every(x=>!x.textContent.trim()))cls="grp2";
+  else if(c.length>1&&c.every(bold))cls="th";
+  else if(KEY.test(tx))cls="key";
+  tr.className=cls;
+  if(cls==="th"||cls==="grp1"||cls==="grp2"||cls==="tnote")return;
+  const a=c[0];
+  if(!a.children.length){const m=a.textContent.match(/^(.*?)(\s*\([^()]*\))$/);if(m&&m[1]){a.textContent="";a.append(m[1]);const u=document.createElement("span");u.className="u";u.textContent=m[2];a.append(u)}}
+  if(/^Utilisation/.test(tx)){const v=c[c.length-1],n=parseFloat(v.textContent);if(!isNaN(n)&&!v.querySelector(".pill")){const b=document.createElement("span");b.className="pill "+(n<=1?"ok":"no");b.textContent=n<=1?"OK":"NOT OK";v.append(b)}}
+  c.slice(1).forEach(x=>{const z=x.textContent.trim();if(z==="OK"&&!x.children.length){x.innerHTML='<span class="pill ok">OK</span>'}
+   if(/✓$/.test(z))x.classList.add("good");else if(/✗$/.test(z))x.classList.add("bad")});
+ });
+}
+IDS.forEach(id=>{const t=document.getElementById(id);if(!t)return;t.classList.add("calc");if(WIDE.includes(id))t.classList.add("wide");deco(t);new MutationObserver(()=>deco(t)).observe(t,{childList:true})});
+})();
+</script></body></html>
